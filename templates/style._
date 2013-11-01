@@ -14,6 +14,7 @@
   <script src='/ext/jquery.sortable.js'></script>
   <script src='/ext/backbone.js'></script>
   <script src='/ext/mapbox.js'></script>
+  <script src='/ext/leaflet-hash.js'></script>
   <script src='/app/lib.js'></script>
   <script src='/app/codemirror.carto.js'></script>
   <script src='/app/codemirror.carto.complete.js'></script>
@@ -431,8 +432,16 @@ Editor.prototype.refresh = function(ev) {
   this.messageClear();
 
   if (!map) {
+    console.log(this.model.get('center'));
+    if (!location.hash) {
+      // provide a default location in the hash, not the L.map (since that will
+      // load before L.Hash takes control)
+      var center = this.model.get('center');
+      location.hash = '#' + center[2] + '/' + center[1] + '/' + center[0];
+    }
+
     map = L.mapbox.map('map');
-    map.setView([this.model.get('center')[1], this.model.get('center')[0]], this.model.get('center')[2]);
+    new L.Hash(map);
     map.on('zoomend', function() { $('#zoomedto').attr('class', 'z' + (map.getZoom()|0)); });
   }
   map.options.minZoom = this.model.get('minzoom');

@@ -1,5 +1,6 @@
 name: Test source
 attribution: "&copy; John Doe 2013."
+geocoder_layer: box.Name1
 minzoom: 0
 maxzoom: 4
 Layer: 

@@ -104,6 +104,18 @@ revlayers.reverse();
     <input <%= disabled %> id='maxzoom' name='maxzoom' class='max' type='range' value='<%= source.maxzoom %>' min='0' max='22' step='1' onchange='rangeHandler(this, "min", "#minzoom");' />
     <label class='range' id='maxzoom-val'><%= source.maxzoom %></label>
   </section>
+  <section>
+    <label class='inline'>Geocoding</label>
+    <select name='geocoder_layer'>
+      <option <%= !source.geocoder_layer ? 'selected' : '' %> value=''>Disabled</option>
+      <% _(revlayers).each(function(l) { %>
+      <% _(l.fields||{}).each(function(type, f) { %>
+      <% var handle = l.id +'.'+ f; %>
+      <option <%= source.geocoder_layer === handle ? 'selected' : '' %> value='<%= handle %>'><%= handle %></option>
+      <% }); %>
+      <% }); %>
+    </select>
+  </section>
   <section class='righted'>
     <a href='#' class='button wide submit icon okay save'>Save</a>
     <% if (!remote) { %>

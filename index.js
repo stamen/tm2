@@ -12,6 +12,7 @@ var path = require('path');
 var source = require('./lib/source');
 var style = require('./lib/style');
 var express = require('express');
+var cors = require('cors');
 var argv = require('optimist')
     .config('config')
     .argv;
@@ -169,7 +170,7 @@ app.get('/:style(style|source)/:z(\\d+)/:x(\\d+)/:y(\\d+).grid.json', function(r
     });
 });
 
-app.get('/:style(style|source)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', function(req, res, next) {
+app.get('/:style(style|source)/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', cors(), function(req, res, next) {
     var z = req.params.z | 0;
     var x = req.params.x | 0;
     var y = req.params.y | 0;
@@ -360,19 +361,19 @@ app.get('/', function(req, res, next) {
     res.redirect('/style?id=' + style.tmpid());
 });
 
-//app.use(function(err, req, res, next) {
-//    // Error on loading a tile, send 404.
-//    if (err && 'z' in req.params) return res.send(err.toString(), 404);
-//    // Otherwise 500 for now.
-//    if (/application\/json/.test(req.headers.accept)) {
-//        res.set({'content-type':'application/javascript'});
-//        res.send({message:err.toString()}, 500);
-//    } else if (/text\/html/.test(req.headers.accept)) {
-//        res.send(tm.templates.error({ error:err }));
-//    } else {
-//        res.send(err.toString(), 500);
-//    }
-//});
+app.use(function(err, req, res, next) {
+    // Error on loading a tile, send 404.
+    if (err && 'z' in req.params) return res.send(err.toString(), 404);
+    // Otherwise 500 for now.
+    if (/application\/json/.test(req.headers.accept)) {
+        res.set({'content-type':'application/javascript'});
+        res.send({message:err.toString()}, 500);
+    } else if (/text\/html/.test(req.headers.accept)) {
+        res.send(tm.templates.error({ error:err }), 500);
+    } else {
+        res.send(err.toString(), 500);
+    }
+});
 
 app.listen(3000);
 console.log('TM2 @ http://localhost:3000/');

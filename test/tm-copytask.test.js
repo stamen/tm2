@@ -47,7 +47,8 @@ describe('copytask', function() {
                         minzoom: 0,
                         name: 'Test source',
                         geocoder_layer: 'box.Name1',
-                        geocoder_resolution: '0',
+                        geocoder_resolution: 0,
+                        geocoder_shardlevel: 0,
                         vector_layers: [ {
                             id: 'box',
                             description: '',
